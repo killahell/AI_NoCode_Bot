@@ -16,13 +16,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print(f"[ERROR] {e}")
         await update.message.reply_text("⚠️ Произошла ошибка. Попробуй позже.")
 
-async def main():
-    app = ApplicationBuilder().token(TOKEN).build()
-    await app.bot.delete_webhook()  # 💥 важно: очищает Webhook
-    app.add_handler(CommandHandler("start", start))
-    print("🤖 Бот запущен")
-    await app.run_polling()
-
 if __name__ == '__main__':
+    app = ApplicationBuilder().token(TOKEN).build()
+
     import asyncio
-    asyncio.run(main())
+    async def remove_webhook():
+        try:
+            await app.bot.delete_webhook()
+        except Exception as e:
+            print(f"[ERROR webhook] {e}")
+
+    asyncio.run(remove_webhook())
+
+    app.add_handler(CommandHandler("start", start))
+    app.run_polling()
