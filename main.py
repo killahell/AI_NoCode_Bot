@@ -1,8 +1,8 @@
-import asyncio
 from telegram import Update, InputFile
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 from config import TOKEN, CHANNEL_USERNAME, PDF_PATH
 
+# Обработка команды /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         user_id = update.effective_user.id
@@ -17,11 +17,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print(f"[ERROR] {e}")
         await update.message.reply_text("⚠️ Произошла ошибка. Попробуй позже.")
 
-async def main():
-    app = ApplicationBuilder().token(TOKEN).build()
-    app.add_handler(CommandHandler("start", start))
-    print("🤖 Бот запущен...")
-    await app.run_polling()
+# Запуск без asyncio.run() (для Render)
+app = ApplicationBuilder().token(TOKEN).build()
+app.add_handler(CommandHandler("start", start))
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    app.run_polling()
